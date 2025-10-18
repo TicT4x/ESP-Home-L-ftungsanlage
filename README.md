@@ -6,6 +6,10 @@ Bauteile:
   - Buck Converter 
   - 12v Netzteil
 
+Zu den 3D Druck Teilen:
+Ist alles etwas tight, also je nach tolleranzen vom Drucker kann es etwas gewalt benötigen, um die sachen zusammen zu bekommen. Hält dafür aber ohne Kleber ^^
+Der Servoadapter ist nötig, da der Servo von unten durch die Basisplatte gesteckt wird und von oben verschraubt. Der Adapter dient also zum Kontern der schraube von Oben.
+
 Zu den PC Lüfter:
 Ich hab drauf geachtet welche zu nehmen, die PWM gesteuert sind und auch über PWM ausgeschaltet werden können. Solltest du andere nehmen, achte darauf, dass die das auch haben. 
 
