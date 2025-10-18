@@ -1,0 +1,137 @@
+esphome:
+  name: bad-luftung
+  friendly_name: Bad Lüftung
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "LonTooc7wix+dQ/gatS/YlSAB1KZfdszEG3wlVU1Idc="
+
+ota:
+  - platform: esphome
+    password: "887229c5f85b2597dbdf08535d19409b"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  manual_ip:
+    static_ip: 192.168.0.36
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+    
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Bad-Luftung Fallback Hotspot"
+    password: "QUnImxeXIFZ4"
+
+
+captive_portal:
+sensor:
+  - platform: pulse_counter
+    pin: GPIO14
+    name: FAN 1 RPM
+    id: fan_1_pulse
+    unit_of_measurement: 'RPM'
+    filters:
+      - multiply: 0.5
+    count_mode:
+      rising_edge: INCREMENT
+      falling_edge: DISABLE
+    update_interval: 3s
+
+  - platform: pulse_counter
+    pin: GPIO27
+    name: FAN 2 RPM
+    id: fan_2_pulse
+    unit_of_measurement: 'RPM'
+    filters:
+      - multiply: 0.5
+    count_mode:
+      rising_edge: INCREMENT
+      falling_edge: DISABLE
+    update_interval: 3s
+
+  - platform: dht
+    pin: GPIO25
+    temperature:
+      name: "Bad Temperatur"
+    humidity:
+      name: "Bad Luftfeuchtigkeit"
+    update_interval: 60s
+
+servo:
+  - id: my_servo
+    output: pwm_output
+    transition_length: 5s
+
+output:
+#Fans
+
+  - platform: ledc
+    pin: 
+      number: GPIO13
+      mode:
+        output: true
+        open_drain: true
+
+    frequency: 23000 Hz #25000
+    id: fanhub_pwm
+    channel: 4
+
+#servo
+  - platform: ledc
+    id: pwm_output
+    pin: GPIO26
+    frequency: 50 Hz
+    channel: 2
+
+fan:
+  - platform: speed
+    output: fanhub_pwm
+    name: "PWM Fan"
+
+    on_turn_on:
+      - switch.turn_on: servo_fan
+    on_turn_off:
+      - switch.turn_off: servo_fan
+
+
+switch:
+  - platform: template
+    name: "Lüftungsklappe"
+    id: servo_fan
+    optimistic: true
+
+    turn_on_action: 
+      - servo.write:
+          id: my_servo
+          level: 0.80
+
+    turn_off_action: 
+      - servo.write:
+          id: my_servo
+          level: -0.12
+
+
+#number:
+#  - platform: template
+#    name: Servo Control
+#    min_value: -12
+#    initial_value: -12
+#    max_value: 80
+#    step: 1
+#    optimistic: true
+#    set_action:
+#      then:
+#        - servo.write:
+#            id: my_servo
+#            level: !lambda 'return x / 100.0;'
