@@ -1,5 +1,6 @@
 Bauteile:
   - 2x Artic P12 Max - PC Lüfter
+  - 2x 608Z Kugellager
   - ESP32 Dev Kit
   - SG90 Servo
   - Buck Converter 
